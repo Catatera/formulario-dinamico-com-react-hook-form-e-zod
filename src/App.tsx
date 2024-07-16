@@ -1,5 +1,6 @@
-import FormHeader from './components/FormHeader';
-import Form from './components/Form';
+import FormHeader from './components/FormHeader.jsx';
+import Form from './components/Form.jsx';
+import React from 'react';
 
 function App() {
   return (
