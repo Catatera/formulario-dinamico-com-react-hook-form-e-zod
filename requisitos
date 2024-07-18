@@ -1,10 +1,6 @@
-
-// Máscara de telefone, CPF e CEP
-
-Implemente, do zero ou usando uma biblioteca, uma máscara para os inputs de telefone, cpf e cep.
-Uma sugestão para as máscaras é, respectivamente, (00) 00000-0000, 000.000.000-27 e 00000-000.
-
 // Preenchimento automático de Endereço (rua) e Cidade após preenchido o CEP
+
+adicionar erro ao não puxar o cep 
 
 Após preenchido o CEP, busque em alguma API de CEP os dados de logradouro e cidade.
 Preencha os inputs de endereço e cidade com os dados retornados.

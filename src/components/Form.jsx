@@ -1,14 +1,31 @@
 import { EyeIcon } from 'lucide-react';
 import { useState } from 'react';
 import { EyeOffIcon } from 'lucide-react';
+import InputMask from 'react-input-mask';
 
 export default function Form() {
 
-  const [pass, setPass] = useState(0)
+  const [pass, setPass] = useState('')
+  const [cep, setCep] = useState('')
+  const [cepObj, setCepObj] = useState('')
+
 
   function handleChangePass() {
     setPass(pass === true ? false : true);
   }
+
+  const handleChangeCep = (e) => {
+    setCep(e.target.value)
+    findCep(cep)
+  }
+
+  async function findCep(cep) {
+    await fetch(`https://viacep.com.br/ws/${cep}/json/`).then(res => res.json()).then(data => {
+      setCepObj(data)
+    })
+    console.log(cepObj)
+  }
+
   return (
     <form>
       <div className="mb-4">
@@ -31,13 +48,13 @@ export default function Form() {
             {
               pass === true ?
                 <button type='button' onClick={handleChangePass}>
-                  <EyeIcon size={20} className="text-slate-600 cursor-pointer"  />
+                  <EyeIcon size={20} className="text-slate-600 cursor-pointer" />
                 </button>
                 :
                 <button type='button' onClick={handleChangePass}>
                   <EyeOffIcon
                     className="text-slate-600 cursor-pointer"
-                    size={20} 
+                    size={20}
                   />
                 </button>
             }
@@ -52,13 +69,13 @@ export default function Form() {
             {
               pass === true ?
                 <button type='button' onClick={handleChangePass}>
-                  <EyeIcon size={20} className="text-slate-600 cursor-pointer"  />
+                  <EyeIcon size={20} className="text-slate-600 cursor-pointer" />
                 </button>
                 :
                 <button type='button' onClick={handleChangePass}>
                   <EyeOffIcon
                     className="text-slate-600 cursor-pointer"
-                    size={20} 
+                    size={20}
                   />
                 </button>
             }
@@ -67,15 +84,16 @@ export default function Form() {
       </div>
       <div className="mb-4">
         <label htmlFor="phone">Telefone Celular</label>
-        <input type="text" id="phone" />
+        <InputMask mask="(99)99999-9999" type="text" id="phone" />
       </div>
       <div className="mb-4">
         <label htmlFor="cpf">CPF</label>
-        <input type="text" id="cpf" />
+        <InputMask mask="999.999.999-99" type="text" id="cpf" />
       </div>
       <div className="mb-4">
         <label htmlFor="cep">CEP</label>
-        <input type="text" id="cep" />
+        <InputMask mask="99999-999" type="text" id="cep" onBlur={handleChangeCep} />
+        {cepObj.localidade ? <p></p> : <p>Cep não encontrado</p>}
       </div>
       <div className="mb-4">
         <label htmlFor="address">Endereço</label>
@@ -89,12 +107,13 @@ export default function Form() {
 
       <div className="mb-4">
         <label htmlFor="city">Cidade</label>
-        <input
-          className="disabled:bg-slate-200"
-          type="text"
-          id="city"
-          disabled
-        />
+          <input
+            className="disabled:bg-slate-200"
+            type="text"
+            id="address"
+            value={cepObj.localidade}
+            disabled
+          />
       </div>
       {/* terms and conditions input */}
       <div className="mb-4">
