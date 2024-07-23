@@ -1,13 +1,3 @@
-// Preenchimento automático de Endereço (rua) e Cidade após preenchido o CEP
-
-adicionar erro ao não puxar o cep 
-
-Após preenchido o CEP, busque em alguma API de CEP os dados de logradouro e cidade.
-Preencha os inputs de endereço e cidade com os dados retornados.
-Informação
-Informação
-Antes de implementar sua solução, pense em qual será o melhor evento para ser escutado neste input.
-
 // Uso da Biblioteca React Hook Form e Zod
 
 Todo o formulário deverá ser "regido" pela biblioteca React Hook Form.

@@ -1,5 +1,5 @@
 import { EyeIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { EyeOffIcon } from 'lucide-react';
 import InputMask from 'react-input-mask';
 
@@ -7,23 +7,26 @@ export default function Form() {
 
   const [pass, setPass] = useState('')
   const [cep, setCep] = useState('')
-  const [cepObj, setCepObj] = useState('')
-
+  const cepRegex = /^\d{2}\d{3}[-]\d{3}$/
+  const [cepObject, setCepObject] = useState('')
 
   function handleChangePass() {
     setPass(pass === true ? false : true);
   }
 
-  const handleChangeCep = (e) => {
+  function handleCep(e) {
     setCep(e.target.value)
-    findCep(cep)
   }
 
-  async function findCep(cep) {
-    await fetch(`https://viacep.com.br/ws/${cep}/json/`).then(res => res.json()).then(data => {
-      setCepObj(data)
+  useEffect(() => cepRegex.test(cep) ? searchCep() : errorCep(), [cep])
+
+  function searchCep() {
+    fetch(`https://viacep.com.br/ws/${cep}/json/`).then(res => res.json()).then(data => {
+      setCepObject(data)
     })
-    console.log(cepObj)
+  }
+  function errorCep() {
+    setCepObject('')
   }
 
   return (
@@ -92,8 +95,8 @@ export default function Form() {
       </div>
       <div className="mb-4">
         <label htmlFor="cep">CEP</label>
-        <InputMask mask="99999-999" type="text" id="cep" onBlur={handleChangeCep} />
-        {cepObj.localidade ? <p></p> : <p>Cep não encontrado</p>}
+        <InputMask mask="99999-999" type="text" id="cep" onChange={handleCep} />
+        <p className='text-red-400 text-sm'>{cepObject.erro ? 'CEP inválido.' : ''}</p>
       </div>
       <div className="mb-4">
         <label htmlFor="address">Endereço</label>
@@ -107,13 +110,13 @@ export default function Form() {
 
       <div className="mb-4">
         <label htmlFor="city">Cidade</label>
-          <input
-            className="disabled:bg-slate-200"
-            type="text"
-            id="address"
-            value={cepObj.localidade}
-            disabled
-          />
+        <input
+          className="disabled:bg-slate-200"
+          type="text"
+          id="address"
+          value={cepObject?cepObject.localidade:''}
+          disabled
+        />
       </div>
       {/* terms and conditions input */}
       <div className="mb-4">
