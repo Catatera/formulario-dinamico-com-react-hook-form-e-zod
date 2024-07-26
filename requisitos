@@ -3,9 +3,10 @@
 Todo o formulário deverá ser "regido" pela biblioteca React Hook Form.
 A validação deverá ser "regida" pela biblioteca Zod.
 A validação dos dados deverá ocorrer no front-end de acordo com as regras estipuladas:
-name: obrigatório, máximo de 255 caracteres.
-email: obrigatório, deve ser um e-mail válido, máximo de 255 caracteres.
-password: obrigatório, mínimo de 8 caracteres, máximo de 255 caracteres.
+; name: obrigatório, máximo de 255 caracteres.
+; email: obrigatório, deve ser um e-mail válido, máximo de 255 caracteres.
+; password: obrigatório, mínimo de 8 caracteres, máximo de 255 caracteres.
+APLICAR REGEX DE EMAIL
 password_confirmation: obrigatório, mínimo de 8 caracteres, máximo de 255 caracteres.
 terms: obrigatório, deve ser um booleano.
 phone: obrigatório, máximo de 20 caracteres.

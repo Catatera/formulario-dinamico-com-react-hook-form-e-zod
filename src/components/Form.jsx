@@ -2,16 +2,39 @@ import { EyeIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { EyeOffIcon } from 'lucide-react';
 import InputMask from 'react-input-mask';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod';
+
+const validateSubmitSchema = z.object({
+  name: z.string().min(1).max(255),
+  email: z.string().min(1).max(255),
+  password: z.string().min(8).max(255),
+  confirmPassword: z.string().min(8).max(255),
+  phone: z.string(),
+  cpf: z.string(),
+  cep: z.string(),
+  address: z.string(),
+  city: z.string(),
+  terms: z.boolean(),
+})
 
 export default function Form() {
+  const { register, formState: { errors }, handleSubmit } = useForm(
+    { resolver: zodResolver(validateSubmitSchema) }
+  )
 
-  const [pass, setPass] = useState('')
+  const [showPass, setShowPass] = useState('')
   const [cep, setCep] = useState('')
   const cepRegex = /^\d{2}\d{3}[-]\d{3}$/
   const [cepObject, setCepObject] = useState('')
 
+  function handleValidateSubmit(data) {
+    console.log(data)
+  }
+
   function handleChangePass() {
-    setPass(pass === true ? false : true);
+    setShowPass(showPass === true ? false : true);
   }
 
   function handleCep(e) {
@@ -30,26 +53,31 @@ export default function Form() {
   }
 
   return (
-    <form>
+    <form onSubmit={handleSubmit(handleValidateSubmit)}>
       <div className="mb-4">
-        <label htmlFor="name">Nome Completo</label>
-        <input type="text" id="name" />
-        {/* Sugestão de exibição de erro de validação */}
-        <div className="min-h-4">
-          <p className="text-xs text-red-400 mt-1">O nome é obrigatório.</p>
-        </div>
+        <label htmlFor="nameInput">Nome Completo</label>
+        <input type="text" id='nameInput' {...register('name')} />
+        {errors.name && <p className="text-xs text-red-400 mt-1">O nome é obrigatório.</p>}
       </div>
       <div className="mb-4">
-        <label htmlFor="email">E-mail</label>
-        <input className="" type="email" id="email" />
+        <label htmlFor="emailInput">E-mail</label>
+        <input className="mb-4" type="email" id="emailInput" {...register('email',
+          {
+            pattern: {
+              value: /[A-Za-z]{3}/,
+              message: 'erro'
+            }
+          })} />
+        {errors.email && <p className="text-xs text-red-400 mt-1">Email inválido.</p>}
+
       </div>
       <div className="mb-4">
-        <label htmlFor="password">Senha</label>
+        <label htmlFor="passwordInput">Senha</label>
         <div className="relative">
-          <input type={pass === true ? "password" : "text"} id="confirm-password" />
+          <input type={showPass === true ? "text" : "password"} id="passwordInput" {...register('password')} />
           <span className="absolute right-3 top-3">
             {
-              pass === true ?
+              showPass === true ?
                 <button type='button' onClick={handleChangePass}>
                   <EyeIcon size={20} className="text-slate-600 cursor-pointer" />
                 </button>
@@ -62,15 +90,16 @@ export default function Form() {
                 </button>
             }
           </span>
+          {errors.password && <p className="text-xs text-red-400 mt-1">A senha deve conter pelo menos 8 caracteres.</p>}
         </div>
       </div>
       <div className="mb-4">
-        <label htmlFor="confirm-password">Confirmar Senha</label>
+        <label htmlFor="confirmPasswordInput">Confirmar Senha</label>
         <div className="relative">
-          <input type={pass === true ? "password" : "text"} id="confirm-password" />
+          <input type={showPass === true ? "password" : "text"} id="confirmPasswordInput" {...register('confirmPassword')} />
           <span className="absolute right-3 top-3">
             {
-              pass === true ?
+              showPass === true ?
                 <button type='button' onClick={handleChangePass}>
                   <EyeIcon size={20} className="text-slate-600 cursor-pointer" />
                 </button>
@@ -83,47 +112,48 @@ export default function Form() {
                 </button>
             }
           </span>
+          {errors.confirmPassword && <p className="text-xs text-red-400 mt-1">As senhas não são iguais.</p>}
         </div>
       </div>
       <div className="mb-4">
-        <label htmlFor="phone">Telefone Celular</label>
-        <InputMask mask="(99)99999-9999" type="text" id="phone" />
+        <label htmlFor="phoneInput">Telefone Celular</label>
+        <InputMask mask="(99)99999-9999" type="text" id="phoneInput" {...register('phone')} />
       </div>
       <div className="mb-4">
-        <label htmlFor="cpf">CPF</label>
-        <InputMask mask="999.999.999-99" type="text" id="cpf" />
+        <label htmlFor="cpfInput">CPF</label>
+        <InputMask mask="999.999.999-99" type="text" id="cpfInput" {...register('cpf')} />
       </div>
       <div className="mb-4">
-        <label htmlFor="cep">CEP</label>
-        <InputMask mask="99999-999" type="text" id="cep" onChange={handleCep} />
+        <label htmlFor="cepInput">CEP</label>
+        <InputMask mask="99999-999" type="text" id="cepInput" {...register('cep')} onChange={handleCep} />
         <p className='text-red-400 text-sm'>{cepObject.erro ? 'CEP inválido.' : ''}</p>
       </div>
       <div className="mb-4">
-        <label htmlFor="address">Endereço</label>
+        <label htmlFor="addressInput">Endereço</label>
         <input
           className="disabled:bg-slate-200"
           type="text"
-          id="address"
-          disabled
+          id="addressInput"
+          {...register('address')}
         />
       </div>
 
       <div className="mb-4">
-        <label htmlFor="city">Cidade</label>
+        <label htmlFor="cityInput">Cidade</label>
         <input
           className="disabled:bg-slate-200"
           type="text"
-          id="address"
-          value={cepObject?cepObject.localidade:''}
+          id="cityInput"
+          value={cepObject ? cepObject.localidade : ''}
           disabled
+          {...register('city')}
         />
       </div>
-      {/* terms and conditions input */}
       <div className="mb-4">
-        <input type="checkbox" id="terms" className="mr-2 accent-slate-500" />
+        <input type="checkbox" id="termsInput" className="mr-2 accent-slate-500" {...register('terms')} />
         <label
           className="text-sm  font-light text-slate-500 mb-1 inline"
-          htmlFor="terms"
+          htmlFor="termsInput"
         >
           Aceito os{' '}
           <span className="underline hover:text-slate-900 cursor-pointer">
