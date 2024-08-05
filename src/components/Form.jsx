@@ -8,16 +8,16 @@ import { z } from 'zod';
 
 const validateSubmitSchema = z.object({
   name: z.string().min(1).max(255),
-  email: z.string().min(1).max(255),
+  email: z.string().min(1).max(255).refine(value => /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/gi.test(value)),
   password: z.string().min(8).max(255),
   confirmPassword: z.string().min(8).max(255),
-  phone: z.string(),
-  cpf: z.string(),
+  phone: z.string().refine(value => /([(][0-9]{2}[)])[0-9]{5}-[0-9]{4}/.test(value)),
+  cpf: z.string().refine(value => /(?!(\d)\1{2}.\1{3}.\1{3}-\1{2})\d{3}\.\d{3}\.\d{3}-\d{2}/.test(value)),
   cep: z.string(),
   address: z.string(),
   city: z.string(),
-  terms: z.boolean(),
-})
+  terms: z.boolean().refine(val => val === true)
+}).required();
 
 export default function Form() {
   const { register, formState: { errors }, handleSubmit } = useForm(
@@ -31,6 +31,7 @@ export default function Form() {
 
   function handleValidateSubmit(data) {
     console.log(data)
+    console.log(errors)
   }
 
   function handleChangePass() {
@@ -61,15 +62,8 @@ export default function Form() {
       </div>
       <div className="mb-4">
         <label htmlFor="emailInput">E-mail</label>
-        <input className="mb-4" type="email" id="emailInput" {...register('email',
-          {
-            pattern: {
-              value: /[A-Za-z]{3}/,
-              message: 'erro'
-            }
-          })} />
+        <input className="mb-4" type="email" id="emailInput" {...register('email')} />
         {errors.email && <p className="text-xs text-red-400 mt-1">Email inválido.</p>}
-
       </div>
       <div className="mb-4">
         <label htmlFor="passwordInput">Senha</label>
@@ -118,10 +112,12 @@ export default function Form() {
       <div className="mb-4">
         <label htmlFor="phoneInput">Telefone Celular</label>
         <InputMask mask="(99)99999-9999" type="text" id="phoneInput" {...register('phone')} />
+        {errors.phone && <p className="text-xs text-red-400 mt-1">Telefone inválido.</p>}
       </div>
       <div className="mb-4">
         <label htmlFor="cpfInput">CPF</label>
         <InputMask mask="999.999.999-99" type="text" id="cpfInput" {...register('cpf')} />
+        {errors.cpf && <p className="text-xs text-red-400 mt-1">CPF inválido.</p>}
       </div>
       <div className="mb-4">
         <label htmlFor="cepInput">CEP</label>
@@ -158,6 +154,8 @@ export default function Form() {
           Aceito os{' '}
           <span className="underline hover:text-slate-900 cursor-pointer">
             termos e condições
+            {errors.terms && <p className="text-xs text-red-400 mt-1">É necessário aceitar os termos e condições.</p>}
+
           </span>
         </label>
       </div>
