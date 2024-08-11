@@ -14,7 +14,7 @@ const validateSubmitSchema = z.object({
   phone: z.string().refine(value => /([(][0-9]{2}[)])[0-9]{5}-[0-9]{4}/.test(value)),
   cpf: z.string().refine(value => /(?!(\d)\1{2}.\1{3}.\1{3}-\1{2})\d{3}\.\d{3}\.\d{3}-\d{2}/.test(value)),
   cep: z.string().refine(value => /^\d{5}[-]\d{3}$/.test(value)),
-  address: z.string(),
+  address: z.string().min(1).max(255),
   city: z.string(),
   terms: z.boolean().refine(val => val === true)
 }).required();
@@ -65,7 +65,7 @@ export default function Form() {
       </div>
       <div className="mb-4">
         <label htmlFor="emailInput">E-mail</label>
-        <input className="mb-4" type="email" id="emailInput" {...register('email')} />
+        <input type="email" id="emailInput" {...register('email')} />
         {errors.email && <p className='text-red-400 text-sm'>Email inválido.</p>}
       </div>
       <div className="mb-4">
@@ -135,6 +135,7 @@ export default function Form() {
           id="addressInput"
           {...register('address')}
         />
+        {errors.address && <p className='text-red-400 text-sm'>Insira seu endereço.</p>}
       </div>
 
       <div className="mb-4">
