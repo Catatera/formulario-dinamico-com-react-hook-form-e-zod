@@ -13,7 +13,7 @@ const validateSubmitSchema = z.object({
   confirmPassword: z.string().min(8).max(255),
   phone: z.string().refine(value => /([(][0-9]{2}[)])[0-9]{5}-[0-9]{4}/.test(value)),
   cpf: z.string().refine(value => /(?!(\d)\1{2}.\1{3}.\1{3}-\1{2})\d{3}\.\d{3}\.\d{3}-\d{2}/.test(value)),
-  cep: z.string(),
+  cep: z.string().refine(value => /^\d{5}[-]\d{3}$/.test(value)),
   address: z.string(),
   city: z.string(),
   terms: z.boolean().refine(val => val === true)
@@ -26,7 +26,7 @@ export default function Form() {
 
   const [showPass, setShowPass] = useState('')
   const [cep, setCep] = useState('')
-  const cepRegex = /^\d{2}\d{3}[-]\d{3}$/
+  const cepRegex = /^\d{5}[-]\d{3}$/
   const [cepObject, setCepObject] = useState('')
 
   function handleValidateSubmit(data) {
@@ -46,11 +46,14 @@ export default function Form() {
 
   function searchCep() {
     fetch(`https://viacep.com.br/ws/${cep}/json/`).then(res => res.json()).then(data => {
-      setCepObject(data)
+      data.erro ? errorCep() : setCepObject(data)
     })
+    errors.cep = undefined
+
   }
   function errorCep() {
     setCepObject('')
+    errors.cep = true
   }
 
   return (
@@ -58,12 +61,12 @@ export default function Form() {
       <div className="mb-4">
         <label htmlFor="nameInput">Nome Completo</label>
         <input type="text" id='nameInput' {...register('name')} />
-        {errors.name && <p className="text-xs text-red-400 mt-1">O nome é obrigatório.</p>}
+        {errors.name && <p className='text-red-400 text-sm'>O nome é obrigatório.</p>}
       </div>
       <div className="mb-4">
         <label htmlFor="emailInput">E-mail</label>
         <input className="mb-4" type="email" id="emailInput" {...register('email')} />
-        {errors.email && <p className="text-xs text-red-400 mt-1">Email inválido.</p>}
+        {errors.email && <p className='text-red-400 text-sm'>Email inválido.</p>}
       </div>
       <div className="mb-4">
         <label htmlFor="passwordInput">Senha</label>
@@ -84,7 +87,7 @@ export default function Form() {
                 </button>
             }
           </span>
-          {errors.password && <p className="text-xs text-red-400 mt-1">A senha deve conter pelo menos 8 caracteres.</p>}
+          {errors.password && <p className='text-red-400 text-sm'>A senha deve conter pelo menos 8 caracteres.</p>}
         </div>
       </div>
       <div className="mb-4">
@@ -106,23 +109,23 @@ export default function Form() {
                 </button>
             }
           </span>
-          {errors.confirmPassword && <p className="text-xs text-red-400 mt-1">As senhas não são iguais.</p>}
+          {errors.confirmPassword && <p className='text-red-400 text-sm'>As senhas não são iguais.</p>}
         </div>
       </div>
       <div className="mb-4">
         <label htmlFor="phoneInput">Telefone Celular</label>
         <InputMask mask="(99)99999-9999" type="text" id="phoneInput" {...register('phone')} />
-        {errors.phone && <p className="text-xs text-red-400 mt-1">Telefone inválido.</p>}
+        {errors.phone && <p className='text-red-400 text-sm'>Telefone inválido.</p>}
       </div>
       <div className="mb-4">
         <label htmlFor="cpfInput">CPF</label>
         <InputMask mask="999.999.999-99" type="text" id="cpfInput" {...register('cpf')} />
-        {errors.cpf && <p className="text-xs text-red-400 mt-1">CPF inválido.</p>}
+        {errors.cpf && <p className='text-red-400 text-sm'>CPF inválido.</p>}
       </div>
       <div className="mb-4">
         <label htmlFor="cepInput">CEP</label>
         <InputMask mask="99999-999" type="text" id="cepInput" {...register('cep')} onChange={handleCep} />
-        <p className='text-red-400 text-sm'>{cepObject.erro ? 'CEP inválido.' : ''}</p>
+        {errors.cep && <p className='text-red-400 text-sm'>CEP inválido.</p>}
       </div>
       <div className="mb-4">
         <label htmlFor="addressInput">Endereço</label>
@@ -154,7 +157,7 @@ export default function Form() {
           Aceito os{' '}
           <span className="underline hover:text-slate-900 cursor-pointer">
             termos e condições
-            {errors.terms && <p className="text-xs text-red-400 mt-1">É necessário aceitar os termos e condições.</p>}
+            {errors.terms && <p className='text-red-400 text-sm'>É necessário aceitar os termos e condições.</p>}
 
           </span>
         </label>
