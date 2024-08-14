@@ -14,7 +14,8 @@
 ; adicionar alidacao de cep por meio do componente function 
 ; address: obrigatório, máximo de 255 caracteres.
 ; city: obrigatório, máximo de 255 caracteres.
-Todos os dados devem ser submetidos de uma vez só para o endpoint da API do Codante.
+; Todos os dados devem ser submetidos de uma vez só para o endpoint da API do Codante.
+adicionar retorno de erro ou conclusao do envio
 
 Zod é uma biblioteca de validação que funciona tanto no node como em browsers. Esse projeto é um SPA, o que significa que iremos usar apenas no browser (client side).
 

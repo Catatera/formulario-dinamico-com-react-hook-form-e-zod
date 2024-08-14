@@ -10,12 +10,12 @@ const validateSubmitSchema = z.object({
   name: z.string().min(1).max(255),
   email: z.string().min(1).max(255).refine(value => /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/gi.test(value)),
   password: z.string().min(8).max(255),
-  confirmPassword: z.string().min(8).max(255),
-  phone: z.string().refine(value => /([(][0-9]{2}[)])[0-9]{5}-[0-9]{4}/.test(value)),
+  password_confirmation: z.string().min(8).max(255),
+  phone: z.string().refine(value => /([(][0-9]{2}[)])\s[0-9]{5}-[0-9]{4}/.test(value)),
   cpf: z.string().refine(value => /(?!(\d)\1{2}.\1{3}.\1{3}-\1{2})\d{3}\.\d{3}\.\d{3}-\d{2}/.test(value)),
-  cep: z.string().refine(value => /^\d{5}[-]\d{3}$/.test(value)),
+  zipcode: z.string().refine(value => /^\d{5}[-]\d{3}$/.test(value)),
   address: z.string().min(1).max(255),
-  city: z.string(),
+  city: z.string().min(1),
   terms: z.boolean().refine(val => val === true)
 }).required();
 
@@ -29,10 +29,31 @@ export default function Form() {
   const cepRegex = /^\d{5}[-]\d{3}$/
   const [cepObject, setCepObject] = useState('')
 
-  function handleValidateSubmit(data) {
+  const handleValidateSubmit = async (data) => {
     console.log(data)
-    console.log(errors)
+    try {
+      const response = await fetch('https://apis.codante.io/api/register-user/register',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        })
+
+      if (!response.ok) {
+        throw new Error("Erro ao enviar!");
+      }
+
+      const result = await response.json();
+
+      console.log("Enviou e Deu bom", result);
+    }
+    catch (error) {
+      console.log("Enviou e Deu ruim", error);
+    }
   }
+
 
   function handleChangePass() {
     setShowPass(showPass === true ? false : true);
@@ -93,7 +114,7 @@ export default function Form() {
       <div className="mb-4">
         <label htmlFor="confirmPasswordInput">Confirmar Senha</label>
         <div className="relative">
-          <input type={showPass === true ? "password" : "text"} id="confirmPasswordInput" {...register('confirmPassword')} />
+          <input type={showPass === true ? "text" : "password"} id="confirmPasswordInput" {...register('password_confirmation')} />
           <span className="absolute right-3 top-3">
             {
               showPass === true ?
@@ -109,23 +130,23 @@ export default function Form() {
                 </button>
             }
           </span>
-          {errors.confirmPassword && <p className='text-red-400 text-sm'>As senhas não são iguais.</p>}
+          {errors.password_confirmation && <p className='text-red-400 text-sm'>As senhas não são iguais.</p>}
         </div>
       </div>
       <div className="mb-4">
         <label htmlFor="phoneInput">Telefone Celular</label>
-        <InputMask mask="(99)99999-9999" type="text" id="phoneInput" {...register('phone')} />
+        <InputMask mask="(99) 99999-9999" type="text" id="phoneInput" {...register('phone')} />
         {errors.phone && <p className='text-red-400 text-sm'>Telefone inválido.</p>}
       </div>
       <div className="mb-4">
-        <label htmlFor="cpfInput">CPF</label>
+        <label htmlFor="cpfInput">CPF válido</label>
         <InputMask mask="999.999.999-99" type="text" id="cpfInput" {...register('cpf')} />
         {errors.cpf && <p className='text-red-400 text-sm'>CPF inválido.</p>}
       </div>
       <div className="mb-4">
         <label htmlFor="cepInput">CEP</label>
-        <InputMask mask="99999-999" type="text" id="cepInput" {...register('cep')} onChange={handleCep} />
-        {errors.cep && <p className='text-red-400 text-sm'>CEP inválido.</p>}
+        <InputMask mask="99999-999" type="text" id="cepInput" {...register('zipcode')} onChange={handleCep} />
+        {errors.zipcode && <p className='text-red-400 text-sm'>CEP inválido.</p>}
       </div>
       <div className="mb-4">
         <label htmlFor="addressInput">Endereço</label>
@@ -145,9 +166,10 @@ export default function Form() {
           type="text"
           id="cityInput"
           value={cepObject ? cepObject.localidade : ''}
-          disabled
+          readOnly
           {...register('city')}
         />
+        {errors.city && <p className='text-red-400 text-sm'>Cidade não encontrada.</p>}
       </div>
       <div className="mb-4">
         <input type="checkbox" id="termsInput" className="mr-2 accent-slate-500" {...register('terms')} />
