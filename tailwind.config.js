@@ -5,7 +5,17 @@ export default {
     fontSize: {
       sm: '0.8rem'
     },
-    extend: {},
+    extend: {
+      height: {
+        'fscreen': '200%',
+      },
+      backdropBlur: {
+        'sm': '2px',
+      },
+      colors: {
+        'blurColor': 'rgba(0,0,0,0.2)',
+      }
+    },
   },
   plugins: [],
 }

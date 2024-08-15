@@ -30,7 +30,6 @@ export default function Form() {
   const [cepObject, setCepObject] = useState('')
 
   const handleValidateSubmit = async (data) => {
-    console.log(data)
     try {
       const response = await fetch('https://apis.codante.io/api/register-user/register',
         {
@@ -42,15 +41,15 @@ export default function Form() {
         })
 
       if (!response.ok) {
-        throw new Error("Erro ao enviar!");
+        throw new Error("Erro ao enviar!"); // tratar erro
       }
 
       const result = await response.json();
 
-      console.log("Enviou e Deu bom", result);
+      console.log("Enviou e Deu bom", result); // tratar êxito
     }
     catch (error) {
-      console.log("Enviou e Deu ruim", error);
+      console.log("Enviou e Deu ruim", error); // tratar erro
     }
   }
 
@@ -78,120 +77,122 @@ export default function Form() {
   }
 
   return (
-    <form onSubmit={handleSubmit(handleValidateSubmit)}>
-      <div className="mb-4">
-        <label htmlFor="nameInput">Nome Completo</label>
-        <input type="text" id='nameInput' {...register('name')} />
-        {errors.name && <p className='text-red-400 text-sm'>O nome é obrigatório.</p>}
-      </div>
-      <div className="mb-4">
-        <label htmlFor="emailInput">E-mail</label>
-        <input type="email" id="emailInput" {...register('email')} />
-        {errors.email && <p className='text-red-400 text-sm'>Email inválido.</p>}
-      </div>
-      <div className="mb-4">
-        <label htmlFor="passwordInput">Senha</label>
-        <div className="relative">
-          <input type={showPass === true ? "text" : "password"} id="passwordInput" {...register('password')} />
-          <span className="absolute right-3 top-3">
-            {
-              showPass === true ?
-                <button type='button' onClick={handleChangePass}>
-                  <EyeIcon size={20} className="text-slate-600 cursor-pointer" />
-                </button>
-                :
-                <button type='button' onClick={handleChangePass}>
-                  <EyeOffIcon
-                    className="text-slate-600 cursor-pointer"
-                    size={20}
-                  />
-                </button>
-            }
-          </span>
-          {errors.password && <p className='text-red-400 text-sm'>A senha deve conter pelo menos 8 caracteres.</p>}
+    <>
+      <form onSubmit={handleSubmit(handleValidateSubmit)}>
+        <div className="mb-4">
+          <label htmlFor="nameInput">Nome Completo</label>
+          <input type="text" id='nameInput' {...register('name')} />
+          {errors.name && <p className='text-red-400 text-sm'>O nome é obrigatório.</p>}
         </div>
-      </div>
-      <div className="mb-4">
-        <label htmlFor="confirmPasswordInput">Confirmar Senha</label>
-        <div className="relative">
-          <input type={showPass === true ? "text" : "password"} id="confirmPasswordInput" {...register('password_confirmation')} />
-          <span className="absolute right-3 top-3">
-            {
-              showPass === true ?
-                <button type='button' onClick={handleChangePass}>
-                  <EyeIcon size={20} className="text-slate-600 cursor-pointer" />
-                </button>
-                :
-                <button type='button' onClick={handleChangePass}>
-                  <EyeOffIcon
-                    className="text-slate-600 cursor-pointer"
-                    size={20}
-                  />
-                </button>
-            }
-          </span>
-          {errors.password_confirmation && <p className='text-red-400 text-sm'>As senhas não são iguais.</p>}
+        <div className="mb-4">
+          <label htmlFor="emailInput">E-mail</label>
+          <input type="email" id="emailInput" {...register('email')} />
+          {errors.email && <p className='text-red-400 text-sm'>Email inválido.</p>}
         </div>
-      </div>
-      <div className="mb-4">
-        <label htmlFor="phoneInput">Telefone Celular</label>
-        <InputMask mask="(99) 99999-9999" type="text" id="phoneInput" {...register('phone')} />
-        {errors.phone && <p className='text-red-400 text-sm'>Telefone inválido.</p>}
-      </div>
-      <div className="mb-4">
-        <label htmlFor="cpfInput">CPF válido</label>
-        <InputMask mask="999.999.999-99" type="text" id="cpfInput" {...register('cpf')} />
-        {errors.cpf && <p className='text-red-400 text-sm'>CPF inválido.</p>}
-      </div>
-      <div className="mb-4">
-        <label htmlFor="cepInput">CEP</label>
-        <InputMask mask="99999-999" type="text" id="cepInput" {...register('zipcode')} onChange={handleCep} />
-        {errors.zipcode && <p className='text-red-400 text-sm'>CEP inválido.</p>}
-      </div>
-      <div className="mb-4">
-        <label htmlFor="addressInput">Endereço</label>
-        <input
-          className="disabled:bg-slate-200"
-          type="text"
-          id="addressInput"
-          {...register('address')}
-        />
-        {errors.address && <p className='text-red-400 text-sm'>Insira seu endereço.</p>}
-      </div>
+        <div className="mb-4">
+          <label htmlFor="passwordInput">Senha</label>
+          <div className="relative">
+            <input type={showPass === true ? "text" : "password"} id="passwordInput" {...register('password')} />
+            <span className="absolute right-3 top-3">
+              {
+                showPass === true ?
+                  <button type='button' onClick={handleChangePass}>
+                    <EyeIcon size={20} className="text-slate-600 cursor-pointer" />
+                  </button>
+                  :
+                  <button type='button' onClick={handleChangePass}>
+                    <EyeOffIcon
+                      className="text-slate-600 cursor-pointer"
+                      size={20}
+                    />
+                  </button>
+              }
+            </span>
+            {errors.password && <p className='text-red-400 text-sm'>A senha deve conter pelo menos 8 caracteres.</p>}
+          </div>
+        </div>
+        <div className="mb-4">
+          <label htmlFor="confirmPasswordInput">Confirmar Senha</label>
+          <div className="relative">
+            <input type={showPass === true ? "text" : "password"} id="confirmPasswordInput" {...register('password_confirmation')} />
+            <span className="absolute right-3 top-3">
+              {
+                showPass === true ?
+                  <button type='button' onClick={handleChangePass}>
+                    <EyeIcon size={20} className="text-slate-600 cursor-pointer" />
+                  </button>
+                  :
+                  <button type='button' onClick={handleChangePass}>
+                    <EyeOffIcon
+                      className="text-slate-600 cursor-pointer"
+                      size={20}
+                    />
+                  </button>
+              }
+            </span>
+            {errors.password_confirmation && <p className='text-red-400 text-sm'>As senhas não são iguais.</p>}
+          </div>
+        </div>
+        <div className="mb-4">
+          <label htmlFor="phoneInput">Telefone Celular</label>
+          <InputMask mask="(99) 99999-9999" type="text" id="phoneInput" {...register('phone')} />
+          {errors.phone && <p className='text-red-400 text-sm'>Telefone inválido.</p>}
+        </div>
+        <div className="mb-4">
+          <label htmlFor="cpfInput">CPF válido</label>
+          <InputMask mask="999.999.999-99" type="text" id="cpfInput" {...register('cpf')} />
+          {errors.cpf && <p className='text-red-400 text-sm'>CPF inválido.</p>}
+        </div>
+        <div className="mb-4">
+          <label htmlFor="cepInput">CEP</label>
+          <InputMask mask="99999-999" type="text" id="cepInput" {...register('zipcode')} onChange={handleCep} />
+          {errors.zipcode && <p className='text-red-400 text-sm'>CEP inválido.</p>}
+        </div>
+        <div className="mb-4">
+          <label htmlFor="addressInput">Endereço</label>
+          <input
+            className="disabled:bg-slate-200"
+            type="text"
+            id="addressInput"
+            {...register('address')}
+          />
+          {errors.address && <p className='text-red-400 text-sm'>Insira seu endereço.</p>}
+        </div>
 
-      <div className="mb-4">
-        <label htmlFor="cityInput">Cidade</label>
-        <input
-          className="disabled:bg-slate-200"
-          type="text"
-          id="cityInput"
-          value={cepObject ? cepObject.localidade : ''}
-          readOnly
-          {...register('city')}
-        />
-        {errors.city && <p className='text-red-400 text-sm'>Cidade não encontrada.</p>}
-      </div>
-      <div className="mb-4">
-        <input type="checkbox" id="termsInput" className="mr-2 accent-slate-500" {...register('terms')} />
-        <label
-          className="text-sm  font-light text-slate-500 mb-1 inline"
-          htmlFor="termsInput"
+        <div className="mb-4">
+          <label htmlFor="cityInput">Cidade</label>
+          <input
+            className="disabled:bg-slate-200"
+            type="text"
+            id="cityInput"
+            value={cepObject ? cepObject.localidade : ''}
+            readOnly
+            {...register('city')}
+          />
+          {errors.city && <p className='text-red-400 text-sm'>Cidade não encontrada.</p>}
+        </div>
+        <div className="mb-4">
+          <input type="checkbox" id="termsInput" className="mr-2 accent-slate-500" {...register('terms')} />
+          <label
+            className="text-sm  font-light text-slate-500 mb-1 inline"
+            htmlFor="termsInput"
+          >
+            Aceito os{' '}
+            <span className="underline hover:text-slate-900 cursor-pointer">
+              termos e condições
+              {errors.terms && <p className='text-red-400 text-sm'>É necessário aceitar os termos e condições.</p>}
+
+            </span>
+          </label>
+        </div>
+
+        <button
+          type="submit"
+          className="bg-slate-500 font-semibold text-white w-full rounded-xl p-4 mt-10 hover:bg-slate-600 transition-colors"
         >
-          Aceito os{' '}
-          <span className="underline hover:text-slate-900 cursor-pointer">
-            termos e condições
-            {errors.terms && <p className='text-red-400 text-sm'>É necessário aceitar os termos e condições.</p>}
-
-          </span>
-        </label>
-      </div>
-
-      <button
-        type="submit"
-        className="bg-slate-500 font-semibold text-white w-full rounded-xl p-4 mt-10 hover:bg-slate-600 transition-colors"
-      >
-        Cadastrar
-      </button>
-    </form>
+          Cadastrar
+        </button>
+      </form>
+    </>
   );
 }
