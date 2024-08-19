@@ -16,6 +16,9 @@
 ; city: obrigatório, máximo de 255 caracteres.
 ; Todos os dados devem ser submetidos de uma vez só para o endpoint da API do Codante.
 adicionar retorno de erro ou conclusao do envio
+se deu bom > modal pra atualizar a pagina
+se deu ruim > modal on e off
+consertar confirmpassword
 
 Zod é uma biblioteca de validação que funciona tanto no node como em browsers. Esse projeto é um SPA, o que significa que iremos usar apenas no browser (client side).
 
@@ -24,3 +27,8 @@ Zod é uma biblioteca de validação que funciona tanto no node como em browsers
 Além da validação client-side, a nossa API também implementa uma validação server-side. Um exemplo que pode ser explorado é o caso do campo cpf: na validação client-side vamos checar apenas o "formato" do CPF, enquanto na validação server-side da API também checamos se o CPF é válido pelo seu dígito verificador.
 
 Implemente, além da validação client-side, também as mensagens de erro de validação retornadas pela API.
+
+zod e react hook form
+validação cliente e servidor
+react portals
+consumo de API

@@ -7,7 +7,7 @@ export default {
     },
     extend: {
       height: {
-        'fscreen': '200%',
+        'fscreen': '210%',
       },
       backdropBlur: {
         'sm': '2px',
