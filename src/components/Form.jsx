@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod'
 import Modal from './Modal'
 import { z } from 'zod';
+import ghLogo from '../imgs/gitHubLogo.png'
 
 const validateSubmitSchema = z.object({
   name: z.string().min(1).max(255),
@@ -230,6 +231,19 @@ export default function Form() {
             </button>}
 
       </form >
+      <section>
+        <a
+          href="https://github.com/gabriel-leonel"
+          target="_blank"
+          className="fixed bottom-4 right-4"
+        >
+          <img
+            src={ghLogo}
+            alt="Link GitHub"
+            className="w-10 h-10"
+          />
+        </a>
+      </section>
     </>
   );
 }
