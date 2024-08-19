@@ -93,7 +93,7 @@ export default function Form() {
   return (
     <>
       <Modal isActive={modalActive} isSubmitOk={submitOk}>
-        <button onClick={handleModalActive}>fechar</button>
+        <button onClick={handleModalActive} className="bg-gray-500 mx-auto mt-3 p-2 w-28 bg-slate-500 font-semibold text-white rounded-xl hover:bg-slate-600 transition-colors">fechar</button>
       </Modal>
 
       <form onSubmit={handleSubmit(handleValidateSubmit)}>
