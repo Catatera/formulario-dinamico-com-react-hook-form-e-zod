@@ -19,7 +19,9 @@ const validateSubmitSchema = z.object({
   address: z.string().min(1).max(255),
   city: z.string().min(1),
   terms: z.boolean().refine(val => val === true)
-}).required();
+}).refine((data) => data.password === data.password_confirmation, {
+  path: ["password_confirmation"],
+});
 
 export default function Form() {
   const { register, formState: { errors }, handleSubmit } = useForm(
@@ -63,11 +65,9 @@ export default function Form() {
     }
   }
 
-  function handleChangePass() {
+  function handleShowPass() {
     setShowPass(showPass === true ? false : true);
   }
-
-  useEffect(() => cepRegex.test(cep) ? searchCep() : errorCep(), [cep])
 
   function handleCep(e) {
     setCep(e.target.value)
@@ -78,13 +78,14 @@ export default function Form() {
       data.erro ? errorCep() : setCepObject(data)
     })
     errors.cep = undefined
-
   }
 
   function errorCep() {
     setCepObject('')
     errors.cep = true
   }
+
+  useEffect(() => cepRegex.test(cep) ? searchCep() : errorCep(), [cep])
 
   function handleModalActive(props) {
     setSubmitOk(props);
@@ -118,11 +119,11 @@ export default function Form() {
             <span className="absolute right-3 top-3">
               {
                 showPass === true ?
-                  <button type='button' onClick={handleChangePass}>
+                  <button type='button' onClick={handleShowPass}>
                     <EyeIcon size={20} className="text-slate-600 cursor-pointer" />
                   </button>
                   :
-                  <button type='button' onClick={handleChangePass}>
+                  <button type='button' onClick={handleShowPass}>
                     <EyeOffIcon
                       className="text-slate-600 cursor-pointer"
                       size={20}
@@ -141,11 +142,11 @@ export default function Form() {
             <span className="absolute right-3 top-3">
               {
                 showPass === true ?
-                  <button type='button' onClick={handleChangePass}>
+                  <button type='button' onClick={handleShowPass}>
                     <EyeIcon size={20} className="text-slate-600 cursor-pointer" />
                   </button>
                   :
-                  <button type='button' onClick={handleChangePass}>
+                  <button type='button' onClick={handleShowPass}>
                     <EyeOffIcon
                       className="text-slate-600 cursor-pointer"
                       size={20}
